@@ -1,3 +1,5 @@
+import dj_database_url
+
 """
 Django settings for bookproject project.
 
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-%ml6axx@j)mhie&iz9k@!wwr&ajy5__dz0@diop3-iw191z%5b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -82,6 +85,14 @@ DATABASES = {
     }
 }
 
+if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config{
+            # Replace this value with your local database's connection string.
+            default='postgresql://postgres:postgres@localhost:5432/bookproject',
+            conn_max_age=600
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -118,6 +129,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStativFilesStorage'
 
 MEDIA_URL = '/media/'
 
