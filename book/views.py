@@ -53,13 +53,30 @@ class UpdateBookView(LoginRequiredMixin, UpdateView):
         return reverse('detail-book', kwargs={'pk': self.object.id})
 
 def index_view(request):
-    logger.info("Index view called")
-    object_list = Book.objects.order_by('-id')
-    ranking_list=Book.objects.annotate(avg_rating=Avg('review__rate')).order_by('-avg_rating')
-    paginator = Paginator(ranking_list, ITEM_PER_PAGE)
-    page_number = request.GET.get('page',1)
-    page_obj = paginator.page(page_number)
-    return render(request, 'book/index.html',{'object_list': object_list, 'ranking_list': ranking_list, 'page_obj':page_obj },)
+    try:
+        object_list = Book.objects.order_by('-id')
+        ranking_list = Book.objects.annotate(avg_rating=Avg('review__rate')).order_by('-avg_rating')
+        paginator = Paginator(ranking_list, ITEM_PER_PAGE)
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.page(page_number)
+        return render(request, 'book/index.html', {
+            'object_list': object_list,
+            'ranking_list': ranking_list,
+            'page_obj': page_obj
+        })
+    except Exception as e:
+        logger.error("Error in index_view: %s", e, exc_info=True)
+        # 500を返す代わりにエラーメッセージを出す（暫定）
+        from django.http import HttpResponseServerError
+        return HttpResponseServerError("Internal Server Error: {}".format(e))
+        
+    #logger.info("Index view called")
+    #object_list = Book.objects.order_by('-id')
+    #ranking_list=Book.objects.annotate(avg_rating=Avg('review__rate')).order_by('-avg_rating')
+    #paginator = Paginator(ranking_list, ITEM_PER_PAGE)
+    #page_number = request.GET.get('page',1)
+    #page_obj = paginator.page(page_number)
+    #return render(request, 'book/index.html',{'object_list': object_list, 'ranking_list': ranking_list, 'page_obj':page_obj },)
     
 class CreateReviewView(LoginRequiredMixin, CreateView):
     model = Review
