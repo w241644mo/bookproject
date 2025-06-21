@@ -1,20 +1,20 @@
 databases:
-	- name: mysitedb
+      - name: mysitedb
 	plan: free
 	databaseName:bookdb
 	user: tail
 servises:
-	- type:web
+      - type: web
 	plan: free
 	name: tail
 	runtime: python
 	buildCommand: "./build.sh"
 	startCommand: "python -m gunicorn bookproject.asgi:application -k uvicorn.workers.UvicornWorker"
 	envVars:
-		- key: DATABASE_URL
+	      - key: DATABASE_URL
 		fromDatabase:
 			name: mysitedb
 			property: connectionString
-		- key: WEB_CONCURRENCY
+	      - key: WEB_CONCURRENCY
 		value: 4
 
