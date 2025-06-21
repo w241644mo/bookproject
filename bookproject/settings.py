@@ -1,3 +1,4 @@
+import os
 import dj_database_url
 
 """
@@ -22,10 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%ml6axx@j)mhie&iz9k@!wwr&ajy5__dz0@diop3-iw191z%5b'
+SECRET_KEY = os.environ.get('SECRET_KEY')
+# 'django-insecure-%ml6axx@j)mhie&iz9k@!wwr&ajy5__dz0@diop3-iw191z%5b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ['*']
 
@@ -87,11 +89,11 @@ DATABASES = {
 
 if not DEBUG:
     DATABASES = {
-        'default': dj_database_url.config{
+        'default': dj_database_url.config (
             # Replace this value with your local database's connection string.
             default='postgresql://postgres:postgres@localhost:5432/bookproject',
             conn_max_age=600
-        }
+        )
     }
 
 # Password validation
@@ -132,7 +134,7 @@ STATIC_URL = '/static/'
 
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStativFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 
