@@ -1,3 +1,4 @@
+from book.consts import ITEM_PER_PAGE
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
@@ -11,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 from django.views.generic.list import ListView
 from .models import Book
-from book.consts import ITEM_PER_PAGE
+
 
 class ListBookView(LoginRequiredMixin, ListView):
     template_name = 'book/book_list.html'
