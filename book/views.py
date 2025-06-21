@@ -7,6 +7,8 @@ from .models import Book, Review
 from django.db.models import Avg
 from django.core.paginator import Paginator
 from .consts import ITEM_PER_PAGE
+import logging
+logger = logging.getLogger(__name__)
 
 class ListBookView(LoginRequiredMixin, ListView):
     template_name = 'book/book_list.html'
@@ -51,6 +53,7 @@ class UpdateBookView(LoginRequiredMixin, UpdateView):
         return reverse('detail-book', kwargs={'pk': self.object.id})
 
 def index_view(request):
+    logger.info("Index view called")
     object_list = Book.objects.order_by('-id')
     ranking_list=Book.objects.annotate(avg_rating=Avg('review__rate')).order_by('-avg_rating')
     paginator = Paginator(ranking_list, ITEM_PER_PAGE)
