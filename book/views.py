@@ -9,11 +9,18 @@ from django.core.paginator import Paginator
 from .consts import ITEM_PER_PAGE
 import logging
 logger = logging.getLogger(__name__)
+from django.views.generic.list import ListView
+from .models import Book
 
 class ListBookView(LoginRequiredMixin, ListView):
     template_name = 'book/book_list.html'
     model = Book
     paginate_by = ITEM_PER_PAGE
+    def get_queryset(self):
+        # 例: 作成日の新しい順に並べる（適宜変更可）
+        return Book.objects.all().order_by('-created_at')
+        #return Book.objects.all().order_by('-id')
+
 
 class DetailBookView(LoginRequiredMixin, DetailView):
     template_name = 'book/book_detail.html'
